@@ -1,0 +1,28 @@
+body {
+    background: linear-gradient(135deg, rgb(80, 77, 87), rgb(80, 77, 87));
+    font-family: Arial, sans-serif;
+}
+
+.card-custom {
+    backdrop-filter: blur(10px);
+    background: rgba(173, 141, 248, 0.61);
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(173, 141, 248, 0.61);
+    padding: 15px;
+}
+
+canvas {
+    width: 100%;
+    height: 200px;
+    background: #ff8;
+    border-radius: 10px;
+}
+
+footer {
+    margin-top: 40px;
+    padding: 20px;
+    text-align: center;
+    background: rgba(0,0,0,0.2);
+    color: white;
+    border-radius: 10px;
+}

@@ -1,108 +1,61 @@
-const canvas = document.getElementById("canvas");
-let ctx = canvas.getContext("2d");
+const canvas2 = document.getElementById("canvas2");
+const ctx2 = canvas2.getContext("2d");
 
-const window_height = window.innerHeight/2;
-const window_width = window.innerWidth/2;
+canvas2.width = 300;
+canvas2.height = 200;
 
-canvas.height = window_height;
-canvas.width = window_width;
-
-canvas.style.background = "#ff8";
-
-class Circle {
-    constructor(x, y, radius, color, text, speed) {
-        this.posX = x;
-        this.posY = y;
-        this.radius = radius;
-        this.baseColor = color; // color original
-        this.color = color;
-        this.text = text;
-        this.speed = speed;
-
-        this.dx = (Math.random() * 2 - 1) * this.speed;
-        this.dy = (Math.random() * 2 - 1) * this.speed;
+class Circle2{
+    constructor(x,y,r){
+        this.x=x; this.y=y; this.r=r;
+        this.dx=Math.random()*4-2;
+        this.dy=Math.random()*4-2;
+        this.color="blue";
     }
 
-    draw(context) {
-        context.beginPath();
-
-        context.strokeStyle = this.color;
-        context.lineWidth = 2;
-
-        context.arc(this.posX, this.posY, this.radius, 0, Math.PI * 2, false);
-        context.stroke();
-
-        // texto
-        context.fillStyle = "black";
-        context.textAlign = "center";
-        context.textBaseline = "middle";
-        context.font = "16px Arial";
-        context.fillText(this.text, this.posX, this.posY);
-
-        context.closePath();
+    draw(){
+        ctx2.beginPath();
+        ctx2.arc(this.x,this.y,this.r,0,Math.PI*2);
+        ctx2.strokeStyle=this.color;
+        ctx2.stroke();
     }
 
-    update(context) {
-        this.draw(context);
+    update(){
+        this.draw();
 
-        // rebote en paredes
-        if ((this.posX + this.radius) > window_width || (this.posX - this.radius) < 0) {
-            this.dx = -this.dx;
-        }
+        if(this.x+this.r>canvas2.width || this.x-this.r<0) this.dx*=-1;
+        if(this.y+this.r>canvas2.height || this.y-this.r<0) this.dy*=-1;
 
-        if ((this.posY + this.radius) > window_height || (this.posY - this.radius) < 0) {
-            this.dy = -this.dy;
-        }
-
-        this.posX += this.dx;
-        this.posY += this.dy;
+        this.x+=this.dx;
+        this.y+=this.dy;
     }
 }
 
-// -------- CONFIGURACIÓN --------
-const N = 10; // número de círculos
-let circles = [];
-
-// crear círculos aleatorios
-for (let i = 0; i < N; i++) {
-    let radius = Math.random() * 40 + 20;
-    let x = Math.random() * (window_width - radius * 2) + radius;
-    let y = Math.random() * (window_height - radius * 2) + radius;
-    let speed = Math.random() * 3 + 1;
-
-    circles.push(new Circle(x, y, radius, "blue", i + 1, speed));
+let circles2=[];
+for(let i=0;i<5;i++){
+    circles2.push(new Circle2(Math.random()*250,Math.random()*150,20));
 }
 
-// -------- DETECCIÓN DE COLISIONES --------
-function detectarColisiones() {
-    // primero todos vuelven a azul
-    circles.forEach(c => c.color = c.baseColor);
+function colisiones2(){
+    circles2.forEach(c=>c.color="blue");
 
-    for (let i = 0; i < circles.length; i++) {
-        for (let j = i + 1; j < circles.length; j++) {
+    for(let i=0;i<circles2.length;i++){
+        for(let j=i+1;j<circles2.length;j++){
+            let dx=circles2[i].x-circles2[j].x;
+            let dy=circles2[i].y-circles2[j].y;
+            let dist=Math.sqrt(dx*dx+dy*dy);
 
-            let dx = circles[i].posX - circles[j].posX;
-            let dy = circles[i].posY - circles[j].posY;
-            let distancia = Math.sqrt(dx * dx + dy * dy);
-
-            if (distancia < circles[i].radius + circles[j].radius) {
-                // colisión detectada → solo cambiar color
-                circles[i].color = "red";
-                circles[j].color = "red";
+            if(dist<circles2[i].r+circles2[j].r){
+                circles2[i].color="red";
+                circles2[j].color="red";
             }
         }
     }
 }
 
-// -------- ANIMACIÓN --------
-function updateCircle() {
-    requestAnimationFrame(updateCircle);
-
-    ctx.clearRect(0, 0, window_width, window_height);
-
-    detectarColisiones();
-
-    circles.forEach(circle => circle.update(ctx));
+function animate2(){
+    requestAnimationFrame(animate2);
+    ctx2.clearRect(0,0,canvas2.width,canvas2.height);
+    colisiones2();
+    circles2.forEach(c=>c.update());
 }
-
-updateCircle();
+animate2();
